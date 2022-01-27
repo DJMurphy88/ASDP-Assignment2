@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { Reviews, Submit } from "./Pages";
 
+import Container from 'react-bootstrap/Container'
+
 export function App() {
   const [movies, setMovies] = useState(null);
   
@@ -21,7 +23,6 @@ export function App() {
         <Route path="/" element={<Reviews movies={movies} onRemoveMovie={name => {
           const newMovies = movies.filter(movie => movie.name !== name);
           setMovies(newMovies);
-          console.log(movies)
         }}/>}/>
         <Route path="/submit" element={<Submit onNewMovie={(name, date, actors, poster, rating) => {
           const newMovies = [...movies, {name, date, actors, poster, rating}];
@@ -36,7 +37,7 @@ export function Movie({name, date, actors, poster, rating, onRemove = f => f}) {
   const altText = `Movie poster for ${name}`
   const posterURL = `./images/${poster}`
   return (
-    <>
+    <Container>
       <h2>{name}</h2>
       <img src={posterURL} alt={altText}></img>
       <p>Release Date: {date}</p>
@@ -48,7 +49,7 @@ export function Movie({name, date, actors, poster, rating, onRemove = f => f}) {
     <button onClick={() => onRemove(name)}>
     Remove
     </button>
-  </>
+  </Container>
 )
 }
 

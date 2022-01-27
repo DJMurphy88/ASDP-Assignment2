@@ -1,0 +1,16 @@
+[
+    {
+        "name" : "T2",
+        "date" : "July 1991",
+        "actors" : ["Arnold Sczwartzneger", "Linda Hamilton", "Edward Furlong"],
+        "poster" : "T2.jpg",
+        "rating" : 5
+    },
+    {
+        "name" : "Rocky 4",
+        "date" : "November 1985",
+        "actors" : ["Sylvester Stallone", "Carl Weathers", "Dolf Lundgren"],
+        "poster" : "rocky4.jpg",
+        "rating" : 5
+    }
+]
