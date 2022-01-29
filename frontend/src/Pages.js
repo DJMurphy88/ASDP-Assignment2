@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/button'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import { LinkContainer } from 'react-router-bootstrap'
 
-export function Reviews({movies = [], onRemoveMovie = f => f}) {
+export function Reviews({movies = []}) {
     if(!movies.length) return <div>No reviews listed.</div>;
     return (
         <div>
@@ -27,7 +27,7 @@ export function Reviews({movies = [], onRemoveMovie = f => f}) {
             <h1>Reviews</h1>
             <Container className="p-5 mb-4 bg-light rounded-3">
                 <Row md="auto">
-                { movies.map(movie => <Movie {...movie} onRemove={onRemoveMovie} />) }
+                { movies.map(movie => <Movie info={movie} />) }
                 </Row>
             </Container>
         </div>
