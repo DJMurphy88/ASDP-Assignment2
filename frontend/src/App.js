@@ -21,7 +21,10 @@ export function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Reviews movies={movies} />}/>
+        <Route path="/" element={<Reviews movies={movies} onRemoveMovie={name => {
+          const newMovies = movies.filter(movie => movie.name !== name);
+          setMovies(newMovies);
+        }}/>}/>
         <Route path="/submit" element={<Submit onNewMovie={(name, date, actors, poster, rating) => {
           const newMovies = [...movies, {name, date, actors, poster, rating}];
           setMovies(newMovies);
@@ -31,19 +34,21 @@ export function App() {
   );
 }
 
-export function Movie(props) {
+export function Movie(props, {onRemove = f => f}) {
 
   const removeMovie = async (movie) => {
-    console.log(movie)
+    console.log("Raw: " + movie)
     const options = {
-      method: 'post',
-      body: "test",
-      Headers: {'Content-Type': 'application/json'}
+      method: "post",
+      body: JSON.stringify({"name": movie}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
-    console.log(options.body)
+    console.log("Option headers: " + options.headers)
     const result = await fetch('/api/removeMovie', options)
     const body = await result.json();
-    console.log(body)
+    console.log("Response:" + body)
   }
   
     const posterURL = `./images/${props.info.poster}`
@@ -57,7 +62,10 @@ export function Movie(props) {
       {props.info.actors.map((actor) => <Actor actor={actor} />)}
     </ul>
     <p>Rating: {props.info.rating}/5</p>
-    <button onClick={() => removeMovie(props.info.name)}>
+    <button onClick={() => {
+      removeMovie(props.info.name)
+      onRemove(props.info.name)
+    }}>
     Remove
     </button>
   </Container>
@@ -68,29 +76,47 @@ function Actor(actors) {
   return <li>{ actors.actor }</li>
 }
 
-
-
-export function AddMovie({onNewMovie =f => f}) {
+export function SubmitMovie({onNewMovie = f => f}) {
   const [nameProps, resetName] = useInput("");
   const [dateProps, resetDate] = useInput("");
   const [actorsProps, resetActors] = useInput("");
   const [posterProps, resetPoster] = useInput("");
   const [ratingProps, resetRating] = useInput("");
 
-  const addMovie = async() => {
-    const res = await fetch(``);
-  }
+  let fileName = ""
+  let actorsArray = []
 
   const submit = event => {
     event.preventDefault();
-    const fileName = posterProps.value.replace("C:\\fakepath\\", "")
-    const actorsArray = actorsProps.value.split(",").map(actor=>actor.trim());
+    fileName = posterProps.value.replace("C:\\fakepath\\", "")
+    actorsArray = actorsProps.value.split(",").map(actor=>actor.trim());
+    addMovie(nameProps.value, dateProps.value, actorsArray, fileName, ratingProps.value);
     onNewMovie(nameProps.value, dateProps.value, actorsArray, fileName, ratingProps.value);
     resetName();
     resetDate();
     resetActors();
     resetPoster();
     resetRating();
+  }
+
+  const addMovie = async() => {
+    const options = {
+      method: "post",
+      body: JSON.stringify(
+        {
+          "name": nameProps.value,
+          "date": dateProps.value,
+          "actors": actorsArray,
+          "poster": fileName,
+          "rating": ratingProps.value
+        }
+      ),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    const result = await fetch(`/api/addMovie`, options)
+    const body = await result.json()
   }
 
   return (

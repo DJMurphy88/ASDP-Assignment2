@@ -13,26 +13,28 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded())
+app.use(bodyParser.urlencoded( false ))
 
 app.get('/hello', (req, res) => { res.send("Hello")});
 
-app.post('/hello', (req, res) => { res.send(`Hello there ${req.body.name}`)})
+app.post('/hello', (req, res) => { 
+    console.log(req.headers)
+    res.send(`Hello there ${req.body.name}`)
+})
 
-app.post('/test', (req, res) => 
-console.log(req))
+app.post('/test', (req, res) => {
+    console.log(req.headers)
+})
 
 
 app.post('/api/removeMovie', async (req, res) => {
     try {
-        console.log("Clicked")
         console.log(req.body.name)
         const client = await MongoClient.connect('mongodb://localhost:27017', {useNewUrlParser: true});
         const db = client.db('my-movies');
 
-        let returnVal = await db.collection('movies').deleteOne( {name:req.body.name})
-        console.log("returnVal: " + returnVal);
-
+        let returnVal = await db.collection('movies').deleteOne({name:req.body.name})
+        
         if( returnVal.deletedCount == 1) {
             res.status(200).json({message: `Movie ${req.body.name} deleted`});
         }
@@ -51,7 +53,7 @@ app.post('/api/addMovie', async (req, res) => {
         const client = await MongoClient.connect('mongodb://localhost:27017', {useNewUrlParser: true});
         const db = client.db('my-movies');
 
-        await db.collection('movies').insertOne( {name:req.body.name, date:req.body.date, actors:req.body.actors,poster:req.body.poster, rating:req.body.rating})
+        await db.collection('movies').insertOne( {name:req.body.name, date:req.body.date, actors:req.body.actors, poster:req.body.poster, rating:req.body.rating})
         
         res.status(200).json({message: "Success"});
         client.close();
@@ -67,7 +69,6 @@ app.get('/api/movies', async (req, res) => {
         const db = client.db('my-movies');
 
         const movieInfo = await db.collection('movies').find({}).toArray();
-        console.log(movieInfo);
         res.status(200).json(movieInfo);
         client.close();
     }
