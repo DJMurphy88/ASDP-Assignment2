@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -7,29 +8,44 @@ import { MongoClient } from 'mongodb';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const uploadDir = path.join(__dirname, 'build/images')
+
+let storage = multer.diskStorage({
+    destination: uploadDir,
+    filename: function(req, file, callback) {
+        callback(null, file.originalname);
+    }
+})
+const upload = multer({ storage: storage });
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'build')));
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded( false ))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/hello', (req, res) => { res.send("Hello")});
 
 app.post('/hello', (req, res) => { 
-    console.log(req.headers)
-    res.send(`Hello there ${req.body.name}`)
+    console.log(req.headers);
+    res.send(`Hello there ${req.body.name}`);
 })
 
 app.post('/test', (req, res) => {
-    console.log(req.headers)
+    console.log(req.headers);
 })
+
+app.post("/api/uploadFile", upload.single("file"), uploadFile);
+
+function uploadFile(req, res) {
+    console.log("File test:", req.body)
+    res.status(200).json({ message: "File uploaded."});
+}
 
 
 app.post('/api/removeMovie', async (req, res) => {
     try {
-        console.log(req.body.name)
         const client = await MongoClient.connect('mongodb://localhost:27017', {useNewUrlParser: true});
         const db = client.db('my-movies');
 

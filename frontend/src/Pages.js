@@ -1,34 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Movie, SubmitMovie } from "./App";
-
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
-import Button from 'react-bootstrap/button'
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
-import { LinkContainer } from 'react-router-bootstrap'
+import Nav from 'react-bootstrap/Nav'
 
 export function Reviews({movies = [], onRemoveMovie = f => f}) {
     if(!movies.length) return <div>No reviews listed.</div>;
     return (
         <div>
-            <Container className="p-3">
+            <Container>
+                <NavBar />
+                <h1>Reviews</h1>
                 <Container className="p-5 mb-4 bg-light rounded-3">
-                    <ButtonToolbar className="custom-btn-toolbar">
-                        <LinkContainer to="/">
-                            <Button>Reviews</Button>
-                        </LinkContainer>
-                        <LinkContainer to="/Submit">
-                            <Button>Submit Review</Button>
-                        </LinkContainer>
-                    </ButtonToolbar>
+                    <Row md="auto">
+                    { movies.map(movie => <Movie {...movie} onRemove={onRemoveMovie} />) }
+                    </Row>
                 </Container>
-            </Container>
-            <h1>Reviews</h1>
-            <Container className="p-5 mb-4 bg-light rounded-3">
-                <Row md="auto">
-                { movies.map(movie => <Movie info={movie} onRemove={onRemoveMovie} />) }
-                </Row>
             </Container>
         </div>
     )
@@ -37,11 +24,28 @@ export function Reviews({movies = [], onRemoveMovie = f => f}) {
 export function Submit({movie =[], onNewMovie =f => f}) {
     return (
         <div>
-            <nav>
-                <Link to="/">Home</Link> Submit Review
-            </nav>
-            <h1>Submit</h1>
-            <SubmitMovie onNewMovie={onNewMovie} />
+            <Container>
+                <NavBar />
+                <h1>Submit</h1>
+                <SubmitMovie onNewMovie={onNewMovie} />
+            </Container>
         </div>
     )
 }
+
+function NavBar() {
+    return(
+        <Container className="p-3">
+            <Container className="p-5 mb-4 bg-light rounded-3">
+                <Nav className="justify-content-center" variant="pills" defaultActiveKey="/">
+                    <Nav.Item>
+                        <Nav.Link href="/">Reviews</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="/submit">Submit Review</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </Container>
+        </Container>
+    )
+  }
