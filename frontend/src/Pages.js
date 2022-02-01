@@ -1,51 +1,63 @@
 import React from "react";
 import { Movie, SubmitMovie } from "./App";
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Nav from 'react-bootstrap/Nav'
+import { Container, Navbar, Nav, Row } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 export function Reviews({movies = [], onRemoveMovie = f => f}) {
     if(!movies.length) return <div>No reviews listed.</div>;
     return (
-        <div>
-            <Container>
-                <NavBar />
+        <>
+            <Container>     
+                <Navigation />
+                <Container className="p-5 bg-light rounded-3">
                 <h1>Reviews</h1>
-                <Container className="p-5 mb-4 bg-light rounded-3">
                     <Row md="auto">
                     { movies.map(movie => <Movie {...movie} onRemove={onRemoveMovie} />) }
                     </Row>
                 </Container>
             </Container>
-        </div>
+        </>
     )
   }
   
 export function Submit({movie =[], onNewMovie =f => f}) {
     return (
-        <div>
+        <>
             <Container>
-                <NavBar />
-                <h1>Submit</h1>
-                <SubmitMovie onNewMovie={onNewMovie} />
+                <Navigation />
+                <Container className="p-5 bg-light rounded-3">
+                    <h1>Submit Review</h1>
+                    <SubmitMovie onNewMovie={onNewMovie} />
+                </Container>
             </Container>
-        </div>
+        </>
     )
 }
 
-function NavBar() {
+export function Navigation() {
     return(
-        <Container className="p-3">
-            <Container className="p-5 mb-4 bg-light rounded-3">
-                <Nav className="justify-content-center" variant="pills" defaultActiveKey="/">
-                    <Nav.Item>
-                        <Nav.Link href="/">Reviews</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href="/submit">Submit Review</Nav.Link>
-                    </Nav.Item>
-                </Nav>
+        <>
+        <Container className="p-3 bg-light rounded-3">
+            <Navbar bg="dark" variant="dark" collapseOnSelect fixed='top' expand='sm'>
+                <Container>
+                    <Navbar.Toggle aria-controls='response-navbar-nav' />
+                    <Navbar.Collapse id='response-navbar-nav'>
+                        <Nav variant="pills" className="">
+                            <Nav.Item>
+                                <LinkContainer to="/">
+                                    <Nav.Link>Reviews</Nav.Link>
+                                </LinkContainer>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <LinkContainer to="/submit">
+                                    <Nav.Link>Submit Review</Nav.Link>
+                                </LinkContainer>
+                            </Nav.Item>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
             </Container>
-        </Container>
+        </>
     )
   }

@@ -1,13 +1,8 @@
-import React from "react"
 import './App.css';
-import { useState, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { Reviews, Submit } from "./Pages";
-
-import Container from 'react-bootstrap/Container'
-import Image from 'react-bootstrap/Image'
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import { Container, Image, Form, Row, Button } from 'react-bootstrap'
 
 export function App() {
   const [movies, setMovies] = useState(null);
@@ -35,17 +30,19 @@ export function App() {
 
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<Reviews movies={movies} onRemoveMovie={name => {
-          const newMovies = movies.filter(movie => movie.name !== name);
-          setMovies(newMovies);
-          removeMovie(name)
-        }}/>}/>
-        <Route path="/submit" element={<Submit onNewMovie={(name, date, actors, poster, rating) => {
-          const newMovies = [...movies, {name, date, actors, poster, rating}];
-          setMovies(newMovies);
-        }} />}/>
-      </Routes>
+      <Container>
+        <Routes>
+          <Route path="/" element={<Reviews movies={movies} onRemoveMovie={name => {
+            const newMovies = movies.filter(movie => movie.name !== name);
+            setMovies(newMovies);
+            removeMovie(name)
+          }}/>}/>
+          <Route path="/submit" element={<Submit onNewMovie={(name, date, actors, poster, rating) => {
+            const newMovies = [...movies, {name, date, actors, poster, rating}];
+            setMovies(newMovies);
+          }} />}/>
+        </Routes>
+      </Container>
     </div>
   );
 }
